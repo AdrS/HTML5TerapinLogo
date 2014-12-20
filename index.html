@@ -3,17 +3,19 @@
 <head>
 	<title>Terapin Logo Clone</title>
 	<script type="text/javascript" src="scripts/script.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 <body>
 	<h1>Terapin Logo Clone</h1>
 	<canvas id="canvas"></canvas>
 	<div>
-		<input id="command" type="text"></input> (runs single command without clearing screen)</br>:
+		<input id="command" type="text"></input> (runs single command without clearing screen)</br>
 		<textarea id="commands" rows="30" cols="80"></textarea></br>
-		<input id="run" type="button" value="Run"></input> (clears screen and runs code entered about)
+		<input id="run" type="button" value="Run"></input> (clears screen and runs code entered about)</br>
+		<textarea id="errors" rows="10" cols="80" readonly></textarea>
 	</div>
 	<script>
-		window.onload = MYAPP.init
+		window.onload = function(){MYAPP.init();};
 	</script>
 </body>
 </html>
