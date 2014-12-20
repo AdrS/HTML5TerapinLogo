@@ -10,47 +10,70 @@ var MYAPP = {
 	width: 0,
 	height: 0,
 	pendown: true,
+	color: '#000000',
+	background_color: '#ffffdd',
+	logo: null,
+	terapin_image_url: 'terapin.png',
 	log_error: function(error) {
 		console.error(error);
-		error_log.value = error_log.value + error + '\n';
+		this.error_log.value = this.error_log.value + error + '\n';
 	},
 	init: function() {
-		canvas = document.getElementById('canvas');
-		command_line = document.getElementById('command');
-		command_text_area = document.getElementById('commands');
-		run_button = document.getElementById('run');
-		error_log = document.getElementById('errors');
-		if(!canvas || !command_line || !command_text_area || !run_button || !error_log) {
+		this.canvas = document.getElementById('canvas');
+		this.command_line = document.getElementById('command');
+		this.command_text_area = document.getElementById('commands');
+		this.run_button = document.getElementById('run');
+		this.error_log = document.getElementById('errors');
+		if(!this.canvas || !this.command_line || !this.command_text_area || !this.run_button || !this.error_log) {
 			console.error('could not get element');
 			return;
 		}
-		context = canvas.getContext('2d');
-		if(!context) {
+		this.context = canvas.getContext('2d');
+		if(!this.context) {
 			console.error('could not canvas context');
 			return;
 		}
-		canvas.width = width = document.body.clientWidth;
-		canvas.height = height = 300;
-		home = { x: (width/2), y: (height/2), heading: 90};
-		position = Object.create(home);
-		run_button.onclick = function() {
-			console.log('ready');
+		this.canvas.width = this.width = document.body.clientWidth;
+		this.canvas.height = this.height = 300;
+		this.home = { x: (this.width/2), y: (this.height/2), heading: 90};
+		this.position = Object.create(this.home);
+		this.logo = new Image();
+		this.logo.src = this.terapin_image_url;
+		var that = this;
+		this.logo.onload = function() {
+			that.CLEARGRAPHICS();
+			that.context.fillStyle = that.color;
+			that.run_button.onclick = function() {
+				console.log('ready');
+			}
+			that.command_line.onchange = function() { //enter pressed
+				console.log('change');
+			}
+			that.command_line.onkeypress = function() {
+				console.log("ky");
+			}
 		}
-		command_line.onchange = function() { //enter pressed
-			console.log('change');
-		}
-		command_line.onkeypress = function() {
-			console.log("ky");
-		}
+	},
+	draw_turtle: function() {
+		//this.context.save();
+		//TODO draw turtle with correct heading
+		//http://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
+		this.context.drawImage(this.logo, this.width - this.position.x - this.logo.width/2, this.height - this.position.y - this.logo.height/2);
 	},
 	BACK: function(distance) {//BK
 		//moves turtle opposite direction
 	},
 	CLEAN: function() {
 		//erases all graphics, does not affect turtle heading
+		this.context.fillStyle = this.background_color;
+		this.context.fillRect(0,0,this.width,this.height);
+		this.draw_turtle();
 	},
 	CLEARGRAPHICS: function() { //CG
 		//clears current graphics, puts turtule home
+		this.CLEAN()
+		this.position = Object.create(this.home);
+		this.draw_turtle();
 	},
 	FORWARD: function(distance) { //FD
 		//moves turtule forward
@@ -63,11 +86,11 @@ var MYAPP = {
 	},
 	LEFT: function(deg) { //LT
 		//turns left specified number of degrees
-		heading += deg;
+		this.heading += deg;
 	},
 	PENDOWN: function() { //PD
 		//puts pendown
-		pendown = true;
+		this.pendown = true;
 	},
 	PENERASE: function() { //PE
 		//turns pen into eraser mode
@@ -75,15 +98,15 @@ var MYAPP = {
 	},
 	PENUP: function() { //PU
 		//raises pen
-		pendown = false;
+		this.pendown = false;
 	},
 	RIGHT: function(deg) { //RT
 		//turns turtle to the right specified number of degrees
-		heading -= deg;
+		this.heading -= deg;
 	},
 	SETHEADING: function(deg) { //SETH
 		//turns turtle to the right specifed number of degrees
-		heading = deg;
+		this.heading = deg;
 	},
 	SETXY: function(x, y) {
 		//sets position of cursor
