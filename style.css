@@ -1,2 +1,3 @@
+body { background-color: #bb7700; color: #ffffdd; }
+input, textarea { background-color: #ffffdd; color: black; }
 #errors { color: red; }
-body { background-color: #CC7700; }
