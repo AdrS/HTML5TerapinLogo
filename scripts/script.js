@@ -10,6 +10,7 @@ var MYAPP = {
 	width: 0,
 	height: 0,
 	pendown: true,
+	show_turtle: true,
 	color: '#000000',
 	background_color: '#ffffdd',
 	logo: null,
@@ -57,8 +58,12 @@ var MYAPP = {
 	draw_turtle: function() {
 		//this.context.save();
 		//TODO draw turtle with correct heading
+		//TODO erase old turtle
 		//http://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
-		this.context.drawImage(this.logo, this.width - this.position.x - this.logo.width/2, this.height - this.position.y - this.logo.height/2);
+		if(this.show_turtle) {
+			this.context.drawImage(this.logo, this.position.x - this.logo.width/2,
+				this.height - this.position.y - this.logo.height/2);
+		}
 	},
 	BACK: function(distance) {//BK
 		//moves turtle opposite direction
@@ -77,16 +82,32 @@ var MYAPP = {
 	},
 	FORWARD: function(distance) { //FD
 		//moves turtule forward
+		var newX = this.position.x + distance*Math.cos(this.position.heading*Math.PI/180);
+		var newY = this.position.y + distance*Math.sin(this.position.heading*Math.PI/180);
+		if(newX < 0 || newX >= this.width || newY < 0 || this.newY >= this.height) {
+			this.log_error('position is out of bounds');
+			return;
+		}
+		if(this.pendown) {
+			this.context.beginPath();
+			this.context.moveTo(this.position.x, this.height - this.position.y);
+			this.context.lineTo(newX, this.height - newY);
+			this.context.stroke();
+		}
+		this.position.x = newX;
+		this.position.y = newY;
+		this.draw_turtle();
 	},
 	HIDETURTLE: function() { //HT
 		//make current turtle cursor disapear
+		this.show_turtle = false;
 	},
 	HOME: function() {
 		//moves cursor to home position
 	},
 	LEFT: function(deg) { //LT
 		//turns left specified number of degrees
-		this.heading += deg;
+		this.position.heading += deg;
 	},
 	PENDOWN: function() { //PD
 		//puts pendown
@@ -102,14 +123,17 @@ var MYAPP = {
 	},
 	RIGHT: function(deg) { //RT
 		//turns turtle to the right specified number of degrees
-		this.heading -= deg;
+		this.position.heading -= deg;
 	},
 	SETHEADING: function(deg) { //SETH
 		//turns turtle to the right specifed number of degrees
-		this.heading = deg;
+		this.position.heading = deg;
 	},
 	SETXY: function(x, y) {
 		//sets position of cursor
+	},
+	SHOWTURTLE: function() { //ST
+		this.show_turtle = true;
 	},
 	TOWARDS: function(x, y) {
 		//sets heading toward point
