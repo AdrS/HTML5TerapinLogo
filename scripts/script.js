@@ -1,6 +1,7 @@
 var MYAPP = {
 	canvas: null,
 	context: null,
+	drawing_data: null,
 	command_text_area: null,
 	run_button: null,
 	command_line: null,
@@ -181,9 +182,10 @@ var MYAPP = {
 		}
 	},
 	draw_turtle: function() {
-		//TODO erase old turtle
-		//http://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
+		//draw turtleless canvas
+		this.context.putImageData(this.drawing_data,0,0);
 		if(this.show_turtle) {
+			//then draw turtle on canvas
 			this.context.save();
 			this.context.translate(this.position.x, this.height - this.position.y);
 			this.context.rotate((90 - this.position.heading)*Math.PI/180);
@@ -204,6 +206,8 @@ var MYAPP = {
 		//erases all graphics, does not affect turtle heading
 		this.context.fillStyle = this.background_color;
 		this.context.fillRect(0,0,this.width,this.height);
+		//save turtleless canvas
+		this.drawing_data = this.context.getImageData(0,0,this.width,this.height);
 	},
 	CLEARGRAPHICS: function() { //CG
 		//clears current graphics, puts turtule home
@@ -219,11 +223,16 @@ var MYAPP = {
 			return;
 		}
 		if(this.pendown) {
+			//set canvas so it has no turtle
+			this.context.putImageData(this.drawing_data,0,0);
+			//then draw on turtle cruftless canvas
 			this.context.strokeStyle = this.color;
 			this.context.beginPath();
 			this.context.moveTo(this.position.x, this.height - this.position.y);
 			this.context.lineTo(newX, this.height - newY);
 			this.context.stroke();
+			//save new turtleless canvas
+			this.drawing_data = this.context.getImageData(0,0,this.width,this.height);
 		}
 		this.position.x = newX;
 		this.position.y = newY;
