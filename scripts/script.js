@@ -17,7 +17,9 @@ var MYAPP = {
 	logo: null,
 	terapin_image_url: 'terapin.png',
 	current_line: 0,
+	variables: {},
 	log_error: function(error) {
+		error = 'error line ' + this.current_line.toString() + ' ' + error;
 		console.error(error);
 		this.error_log.value = this.error_log.value + error + '\n';
 	},
@@ -69,18 +71,30 @@ var MYAPP = {
 			}
 		}
 	},
-	assert_num_args: function(chunk, num) {
-		if(chunk.length !== num + 1) {
-			this.log_error('line ' + this.current_line.toString() + ' '+chunk[0] + ' takes '
-				+ num.toString() + ' parameters, not ' + (chunk.length - 1).toString());
+	assert_num_args: function(chunk, num, mode) {
+		if(mode === undefined && chunk.length !== num + 1) {
+			this.log_error(chunk[0] + ' takes ' + num.toString() + ' parameters, not ' + (chunk.length - 1).toString());
+			return false;
+		}else if(mode === 'gt' && chunk.length < num + 2) {
+			this.log_error(chunk[0] + 'does not have enough parameters');
+			return false;
+		} else if(mode === 'lt' && chunk.length >= num) {
+			this.log_error(chunk[0] + 'does not have enough parameters');
 			return false;
 		}
-		return true;
+ 		return true;
 	},
 	assert_int: function(num) {
 		var num2 = parseInt(num);
 		if(isNaN(num2) || !isFinite(num2)) {
-			this.log_error('line ' + this.current_line.toString() + ' \"' + num.toString() + '\" is not a valid number');
+			this.log_error(' \"' + num.toString() + '\" is not a valid number');
+			return false;
+		}
+		return true;
+	},
+	assert_var_name: function(name) {
+		if(name.length < 2 || !/"[a-zA-Z][a-zA-Z0-9]*/.test(name)) {
+			this.log_error('\"' + name + '\" is not a valid variable name');
 			return false;
 		}
 		return true;
@@ -150,6 +164,11 @@ var MYAPP = {
 			case 'LT':
 				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
 				this.LEFT(parseInt(chunks[1]));
+				break;
+			case 'MAKE':
+				if(!this.assert_num_args(chunks, 1, 'gt') || !this.assert_var_name(chunks[1]))
+					return;
+				this.MAKE(chunks[1].slice(1), chunks.slice(2).join(''));
 				break;
 			case 'RIGHT':
 			case 'RT':
@@ -248,6 +267,10 @@ var MYAPP = {
 	LEFT: function(deg) { //LT
 		//turns left specified number of degrees
 		this.position.heading += deg;
+	},
+	MAKE: function(varname, value) {
+		//defines a variable
+		this.variables[varname] = value;
 	},
 	PENDOWN: function() { //PD
 		//puts pendown
