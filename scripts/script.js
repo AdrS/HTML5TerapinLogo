@@ -20,6 +20,15 @@ var MYAPP = {
 		console.error(error);
 		this.error_log.value = this.error_log.value + error + '\n';
 	},
+	reset_values: function() {
+		this.pendown = true;
+		this.show_turtle = true;
+		this.color = '#000000';
+		this.background_color = '#ffffdd';
+		this.position = Object.create(this.home);
+		this.CLEARGRAPHICS();
+		this.draw_turtle();
+	},
 	init: function() {
 		this.canvas = document.getElementById('canvas');
 		this.command_line = document.getElementById('command');
@@ -47,6 +56,7 @@ var MYAPP = {
 			that.draw_turtle();
 			that.context.fillStyle = that.color;
 			that.run_button.onclick = function() {
+				that.reset_values();
 				that.run_commands(that.command_text_area.value);
 			}
 			that.command_line.onchange = function() { //enter pressed
