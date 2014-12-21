@@ -44,12 +44,14 @@ var MYAPP = {
 		var that = this;
 		this.logo.onload = function() {
 			that.CLEARGRAPHICS();
+			that.draw_turtle();
 			that.context.fillStyle = that.color;
 			that.run_button.onclick = function() {
 				that.run_commands(that.command_text_area.value);
 			}
 			that.command_line.onchange = function() { //enter pressed
 				that.run_commands(that.command_line.value);
+				that.command_line.value = '';
 			}
 			that.command_line.onkeypress = function() {
 				console.log("ky");
@@ -169,13 +171,14 @@ var MYAPP = {
 		}
 	},
 	draw_turtle: function() {
-		//this.context.save();
-		//TODO draw turtle with correct heading
 		//TODO erase old turtle
 		//http://stackoverflow.com/questions/17411991/html5-canvas-rotate-image
 		if(this.show_turtle) {
-			this.context.drawImage(this.logo, this.position.x - this.logo.width/2,
-				this.height - this.position.y - this.logo.height/2);
+			this.context.save();
+			this.context.translate(this.position.x, this.height - this.position.y);
+			this.context.rotate((90 - this.position.heading)*Math.PI/180);
+			this.context.drawImage(this.logo, -this.logo.width/2, -this.logo.height/2);
+			this.context.restore();
 		}
 	},
 	is_color: function(color) {
