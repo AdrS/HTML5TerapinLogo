@@ -162,6 +162,13 @@ var MYAPP = {
 	},
 	SETXY: function(x, y) {
 		//sets position of cursor
+		if(x < 0 || x >= this.width || y < 0 || y >= this.height) {
+			this.log_error('position is out of bounds');
+			return;
+		}
+		this.position.x = x;
+		this.position.y = y;
+		this.draw_turtle();
 	},
 	SHOWTURTLE: function() { //ST
 		this.show_turtle = true;
