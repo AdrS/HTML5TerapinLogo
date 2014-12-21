@@ -124,6 +124,7 @@ var MYAPP = {
 	PENERASE: function() { //PE
 		//turns pen into eraser mode
 		//set color to background color
+		this.color = this.background_color;
 	},
 	PENUP: function() { //PU
 		//raises pen
@@ -175,5 +176,20 @@ var MYAPP = {
 	},
 	TOWARDS: function(x, y) {
 		//sets heading toward point
+		var dx = x - this.position.x;
+		var dy = y - this.position.y;
+		if(dx === 0) {
+			if(dy > 0) {
+				this.position.heading = 90;
+			} else if( dy < 0) {
+				this.position.heading = - 90;
+			}//what to do if dy & dx are both 0???
+		} else {
+			if(dx > 0) {
+				this.position.heading = Math.atan(dy/dx)*180/Math.PI;
+			} else {
+				this.position.heading = 180 - Math.atan(-dy/dx)*180/Math.PI;
+			}
+		}
 	}
 };
