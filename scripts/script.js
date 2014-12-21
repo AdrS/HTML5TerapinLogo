@@ -15,6 +15,7 @@ var MYAPP = {
 	background_color: '#ffffdd',
 	logo: null,
 	terapin_image_url: 'terapin.png',
+	current_line: 0,
 	log_error: function(error) {
 		console.error(error);
 		this.error_log.value = this.error_log.value + error + '\n';
@@ -36,7 +37,7 @@ var MYAPP = {
 		}
 		this.canvas.width = this.width = document.body.clientWidth;
 		this.canvas.height = this.height = 300;
-		this.home = { x: (this.width/2), y: (this.height/2), heading: 40};
+		this.home = { x: (this.width/2), y: (this.height/2), heading: 90};
 		this.position = Object.create(this.home);
 		this.logo = new Image();
 		this.logo.src = this.terapin_image_url;
@@ -45,14 +46,126 @@ var MYAPP = {
 			that.CLEARGRAPHICS();
 			that.context.fillStyle = that.color;
 			that.run_button.onclick = function() {
-				console.log('ready');
+				that.run_commands(that.command_text_area.value);
 			}
 			that.command_line.onchange = function() { //enter pressed
-				console.log('change');
+				that.run_commands(that.command_line.value);
 			}
 			that.command_line.onkeypress = function() {
 				console.log("ky");
 			}
+		}
+	},
+	assert_num_args: function(chunk, num) {
+		if(chunk.length !== num + 1) {
+			this.log_error('line ' + this.current_line.toString() + ' '+chunk[0] + ' takes '
+				+ num.toString() + ' parameters, not ' + (chunk.length - 1).toString());
+			return false;
+		}
+		return true;
+	},
+	assert_int: function(num) {
+		var num2 = parseInt(num);
+		if(isNaN(num2) || !isFinite(num2)) {
+			this.log_error('line ' + this.current_line.toString() + ' \"' + num.toString() + '\" is not a valid number');
+			return false;
+		}
+		return true;
+	},
+	run_commands: function(unparsed) {
+		console.log("running ...");
+		var lines = unparsed.split('\n');
+		var chunks = null;
+		for(this.current_line = 0; this.current_line < lines.length; this.current_line++) {
+			chunks = lines[this.current_line].trim();
+			if(chunks === '') {
+				continue;
+			}
+			chunks = chunks.split(/\s+/g); //what if there is a string literal???
+			console.log(chunks);
+			chunks[0] = chunks[0].toUpperCase();
+			switch (chunks[0]) {
+			case 'FORWARD':
+			case 'FD':
+				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
+				this.FORWARD(parseInt(chunks[1]));
+				break;
+			case 'BACK':
+			case 'BK':
+				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
+				this.BACK(parseInt(chunks[1]));
+				break;
+			case 'CLEAN':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.CLEAN();
+				break;
+			case 'CG':
+			case 'CLEARGRAPHICS':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.CLEARGRAPHICS();
+				break;
+			case 'HIDETURTLE':
+			case 'HT':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.HIDETURTLE();
+				break;
+			case 'HOME':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.HOME();
+				break;
+			case 'PENDOWN':
+			case 'PD':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.PENDOWN();
+				break;
+			case 'PENUP':
+			case 'PU':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.PENUP();
+				break;
+			case 'PENERASE':
+			case 'PE':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.PENERASE();
+				break;
+			case 'SHOWTURTLE':
+			case 'ST':
+				if(!this.assert_num_args(chunks, 0)) return;
+				this.SHOWTURTLE();
+				break;
+			case 'LEFT':
+			case 'LT':
+				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
+				this.LEFT(parseInt(chunks[1]));
+				break;
+			case 'RIGHT':
+			case 'RT':
+				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
+				this.RIGHT(parseInt(chunks[1]));
+				break;
+			case 'SETHEADING':
+			case 'SETH':
+				if(!this.assert_num_args(chunks, 1) || !this.assert_int(chunks[1])) return;
+				this.SETHEADING(parseInt(chunks[1]));
+				break;
+			case 'SETPENCOLOR':
+			case 'SETPC':
+				if(!this.assert_num_args(chunks, 1)) return;
+				this.SETPENCOLOR(chunks[1]);
+				break;
+			case 'SETXY':
+				if(!this.assert_num_args(chunks, 2) || !this.assert_int(chunks[1]) || !this.assert_int(chunks[2])) return;
+				this.SETXY(parseInt(chunks[1]), parseInt(chunks[2]));
+				break;
+			case 'TOWARDS':
+				if(!this.assert_num_args(chunks, 2) || !this.assert_int(chunks[1]) || !this.assert_int(chunks[2])) return;
+				this.TOWARDS(parseInt(chunks[1]), parseInt(chunks[2]));
+				break;
+			default:
+				this.log_error('\"' + chunks[0].toString() + '\" is not a valid command');
+				return;
+			}
+			this.draw_turtle();
 		}
 	},
 	draw_turtle: function() {
@@ -78,13 +191,11 @@ var MYAPP = {
 		//erases all graphics, does not affect turtle heading
 		this.context.fillStyle = this.background_color;
 		this.context.fillRect(0,0,this.width,this.height);
-		this.draw_turtle();
 	},
 	CLEARGRAPHICS: function() { //CG
 		//clears current graphics, puts turtule home
 		this.CLEAN()
 		this.position = Object.create(this.home);
-		this.draw_turtle();
 	},
 	FORWARD: function(distance) { //FD
 		//moves turtule forward
@@ -103,7 +214,6 @@ var MYAPP = {
 		}
 		this.position.x = newX;
 		this.position.y = newY;
-		this.draw_turtle();
 	},
 	HIDETURTLE: function() { //HT
 		//make current turtle cursor disapear
@@ -169,7 +279,6 @@ var MYAPP = {
 		}
 		this.position.x = x;
 		this.position.y = y;
-		this.draw_turtle();
 	},
 	SHOWTURTLE: function() { //ST
 		this.show_turtle = true;
