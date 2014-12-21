@@ -36,7 +36,7 @@ var MYAPP = {
 		}
 		this.canvas.width = this.width = document.body.clientWidth;
 		this.canvas.height = this.height = 300;
-		this.home = { x: (this.width/2), y: (this.height/2), heading: 90};
+		this.home = { x: (this.width/2), y: (this.height/2), heading: 40};
 		this.position = Object.create(this.home);
 		this.logo = new Image();
 		this.logo.src = this.terapin_image_url;
@@ -178,18 +178,10 @@ var MYAPP = {
 		//sets heading toward point
 		var dx = x - this.position.x;
 		var dy = y - this.position.y;
-		if(dx === 0) {
-			if(dy > 0) {
-				this.position.heading = 90;
-			} else if( dy < 0) {
-				this.position.heading = - 90;
-			}//what to do if dy & dx are both 0???
+		if(dy === 0 && dx === 0) {
+			console.log('already at point');
 		} else {
-			if(dx > 0) {
-				this.position.heading = Math.atan(dy/dx)*180/Math.PI;
-			} else {
-				this.position.heading = 180 - Math.atan(-dy/dx)*180/Math.PI;
-			}
+			this.position.heading = Math.atan2(dy,dx)*180/Math.PI;
 		}
 	}
 };
