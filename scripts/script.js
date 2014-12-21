@@ -67,6 +67,7 @@ var MYAPP = {
 	},
 	BACK: function(distance) {//BK
 		//moves turtle opposite direction
+		this.FORWARD(-distance);
 	},
 	CLEAN: function() {
 		//erases all graphics, does not affect turtle heading
@@ -104,6 +105,7 @@ var MYAPP = {
 	},
 	HOME: function() {
 		//moves cursor to home position
+		this.position = Object.create(this.home);
 	},
 	LEFT: function(deg) { //LT
 		//turns left specified number of degrees
