@@ -65,6 +65,11 @@ var MYAPP = {
 				this.height - this.position.y - this.logo.height/2);
 		}
 	},
+	is_color: function(color) {
+		var node = document.createElement('p');
+		node.style.color = color;
+		return node.style.color !== '';
+	},
 	BACK: function(distance) {//BK
 		//moves turtle opposite direction
 		this.FORWARD(-distance);
@@ -90,6 +95,7 @@ var MYAPP = {
 			return;
 		}
 		if(this.pendown) {
+			this.context.strokeStyle = this.color;
 			this.context.beginPath();
 			this.context.moveTo(this.position.x, this.height - this.position.y);
 			this.context.lineTo(newX, this.height - newY);
@@ -130,6 +136,29 @@ var MYAPP = {
 	SETHEADING: function(deg) { //SETH
 		//turns turtle to the right specifed number of degrees
 		this.position.heading = deg;
+	},
+	SETPENCOLOR: function(color) { //SETPC
+		//sets color of pen 0-BK, 1-W, 2-G, 3-V, 4-O, 5-B
+		if(this.is_color(color)) {
+			this.color = color;
+		}
+		else if(color === 0 || color === 'bk') {
+			this.color = 'black';
+		} else if(color === 1 || color === 'w') {
+			this.color = 'white';
+		} else if(color === 2 || color === 'g') {
+			this.color = 'green';
+		} else if(color === 3 || color === 'v') {
+			this.color = 'violet';
+		} else if(color === 4 || color === 'o') {
+			this.color = 'orange';
+		} else if(color === 'r') {
+			this.color = 'red';
+		} else if(color === 'y') {
+			this.color = 'yellow';
+		} else {
+			this.log_error('\"' + color.toString() + '\" is not a valid color');
+		}
 	},
 	SETXY: function(x, y) {
 		//sets position of cursor
