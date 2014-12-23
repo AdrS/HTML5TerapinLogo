@@ -7,13 +7,36 @@
 </head>
 <body>
 	<h1>Terapin Logo Clone</h1>
+	<p>Written by Adrian Stoll December 2014</p>
 	<canvas id="canvas"></canvas>
 	<div>
 		<input id="command" type="text"></input> (runs single command without clearing screen)</br>
-		<textarea id="commands" rows="30" cols="80"></textarea></br>
+		<textarea id="commands" rows="10" cols="80"></textarea></br>
 		<input id="run" type="button" value="Run"></input> (clears screen and runs code entered about)</br>
+		<h6>Errors</h6>
 		<textarea id="errors" rows="10" cols="80" readonly></textarea>
 	</div>
+	<table>
+		<thead><tr><th>Command</th><th>Parameters</th><th>Alias</th><th>Description</th></tr></thead>
+		<tbody>
+		<tr><td>BACK</td><td>distance</td><td>BK</td><td>moves turtle opposite direction</td></tr>
+		<tr><td>CLEAN</td><td></td><td></td><td>erases all graphics, does not affect turtle heading</td></tr>
+		<tr><td>CLEARGRAPHICS</td><td></td><td>CG</td><td>clears current graphics, resets everything</td></tr>
+		<tr><td>FORWARD</td><td>distance</td><td>FD</td><td>moves turtule forward</td></tr>
+		<tr><td>HIDETURTLE</td><td></td><td>HT</td><td>hide tutle cursor</td></tr>
+		<tr><td>HOME</td><td></td><td></td><td>moves cursor to home position</td></tr>
+		<tr><td>LEFT</td><td>degrees</td><td>LT</td><td>turns left specified number of degrees</td></tr>
+		<tr><td>PENDOWN</td><td></td><td>PD</td><td>puts pendown</td></tr>
+		<tr><td>PENERASE</td><td></td><td>PE</td><td>turns pen into eraser by setting color to background color</td></tr>
+		<tr><td>PENUP</td><td></td><td>PU</td><td>raises pen</td></tr>
+		<tr><td>RIGHT</td><td>deg</td><td>RT</td><td>turns turtle to the right specified number of degrees</td></tr>
+		<tr><td>SETHEADING</td><td>deg</td><td>SETH</td><td>turns turtle to the right specifed number of degrees</td></tr>
+		<tr><td>SETPENCOLOR</td><td>color</td><td>SETPC</td><td>sets color of pen (accepts color names, rgb(7,128,90) format, #FF0077 format)</td></tr>
+		<tr><td>SETXY</td><td>x, y</td><td></td><td>sets position of cursor</td></tr>
+		<tr><td>SHOWTURTLE</td><td></td><td>ST</td><td>shows turtule cursor</td></tr>
+		<tr><td>TOWARDS</td><td>x, y</td><td></td><td>sets heading towards specifed point</td></tr>
+		<tbody>
+	</table>
 	<script>
 		window.onload = function(){MYAPP.init();};
 	</script>

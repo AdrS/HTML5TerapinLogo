@@ -48,7 +48,8 @@ var MYAPP = {
 			return;
 		}
 		this.canvas.width = this.width = document.body.clientWidth;
-		this.canvas.height = this.height = 300;
+		var tempH = document.body.clientHeight - 500;
+		this.canvas.height = this.height = tempH > 500 ? tempH : 500;
 		this.home = { x: (this.width/2), y: (this.height/2), heading: 90};
 		this.position = Object.create(this.home);
 		this.logo = new Image();
@@ -83,6 +84,9 @@ var MYAPP = {
 			return false;
 		}
  		return true;
+	},
+	evaluate_expression: function(exp) {
+		
 	},
 	assert_int: function(num) {
 		var num2 = parseInt(num);
